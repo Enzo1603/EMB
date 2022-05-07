@@ -45,7 +45,7 @@ def register():
         db.session.commit()
         send_confirmation_email(user)
         flash("A confirmation email has been sent to your email address.")
-        return redirect(url_for("auth_bp.unconfirmed"))
+        return redirect(url_for("auth_bp.login"))
 
     return render_template("auth/register.html", form=form)
 
