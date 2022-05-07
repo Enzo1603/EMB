@@ -1,0 +1,73 @@
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+    line-height: 1.5;
+    margin-bottom: 16px;
+}
+
+
+.hover-link {
+    margin: 0 3px;
+    padding: 3px 5px;
+    border-radius: 6px;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out;
+    -moz-transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out;
+    -webkit-transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out;
+
+}
+
+.hover-link:hover {
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out;
+    -moz-transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out;
+    -webkit-transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out;
+    color: white;
+    background-color: black;
+    border-radius: 6px;
+}
+
+.pricing-link:hover {
+    transition: color 0.15s ease-in-out, background-image 0.15s ease-in-out;
+    -moz-transition: color 0.15s ease-in-out, background-image 0.15s ease-in-out;
+    -webkit-transition: color 0.15s ease-in-out, background-image 0.15s ease-in-out;
+    background-color: white;
+    background-image: linear-gradient(180deg, #ffd700, #ffae00);
+    border-radius: 6px;
+}
+
+.moderate-link:hover {
+    transition: color 0.15s ease-in-out, background-image 0.15s ease-in-out;
+    -moz-transition: color 0.15s ease-in-out, background-image 0.15s ease-in-out;
+    -webkit-transition: color 0.15s ease-in-out, background-image 0.15s ease-in-out;
+    background-color: white;
+    background-image: linear-gradient(180deg, #0d6efd, #0b58ca);
+    border-radius: 6px;
+
+}
+
+#sign-out {
+    color: #dc3545;
+}
+
+#sign-out:focus {
+    background-color: #dc3545;
+    color: white;
+}
+
+::-moz-selection {
+    /* Code for Firefox */
+    background: #fde69a;
+}
+
+::selection {
+    background: #fde69a;
+}
+
+mark {
+    background: #f9ca0e;
+    padding: 2px 10px;
+    border-radius: .25rem;
+}

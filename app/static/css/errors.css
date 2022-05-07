@@ -1,0 +1,18 @@
+.bg-container {
+    position: inline-block;
+    padding-top: 3%;
+    padding-bottom: 3%;
+}
+
+h1,
+h3,
+h5 {
+    padding: 2% 0 0 5%;
+    margin-top: 0;
+    text-shadow: 0 0 10px black;
+}
+
+
+#astronaut-img {
+    height: 100px;
+}

@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block styles %}
+{{ super() }}
+<style>
+    p {
+        margin-bottom: 2em;
+    }
+
+    img {
+        max-width: 100%;
+        border-radius: 0.25em;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="col-lg-8 col-md-10 mx-auto border-bottom">
+        {% if user == current_user or current_user.is_administrator() %}
+        <br />
+        <a
+            href="{# {{ url_for('post_bp.edit_post', username=username, post_id=post.id) }} #}"
+            class="btn {% if current_user.is_administrator() %}btn-danger{% else %}btn-dark{% endif %} w-100">
+            <i class="bi bi-pencil-square me-3"></i>
+            Edit Post
+            {% if current_user.is_administrator() %}[Admin]{% endif %}
+        </a>
+        <br>
+        <br>
+        {% endif %}
+        <img
+            class="img-fluid rounded-2"
+            style="object-fit: cover; max-height: 550px; width: 100%"
+            src="{{ url_for('static', filename='post/post-images/' + post.image) }}"
+            alt="image not found"
+        />
+        <h1 class="my-3 text-bold">{{ post.title }}</h1>
+        <p class="mb-1 text-muted text-end" style="font-weight: 600;">{{ moment(post.timestamp).format("LL") }}</p>
+    </div>
+
+    <div class="col-lg-8 col-md-10 mx-auto my-3 fs-4 border-bottom">
+        {{ post.body | safe }}
+    </div>
+</div>
+<br>
+{% if current_user.can(Permission.COMMENT) %}
+<div class="container col-lg-6 col-md-8 col-sm-10 py-3 pt-4 mb-4 bg-light rounded-3 shadow">
+    <div class="text-center">
+        {% include "_logo.html" %}
+        <h1 class="h3 mt-4 mb-2 fw-normal">Comment</h1>
+    </div>
+
+    <div class="m-4">
+        {{ ckeditor.load(pkg_type="basic") }}
+        {{ ckeditor.config(name="body") }}
+        {{ render_form(
+                form,
+                method="POST",
+                novalidate=True,
+                button_style="btn btn-md btn-warning w-100 mt-3"
+            ) 
+        }}
+    </div>
+</div>
+<br>
+{% endif %}
+
+<div class="col-lg-8 col-md-10 mx-auto">
+    {% for comment in comments %}
+        {% include "_comments.html" %}
+    {% endfor %}
+</div>
+
+{% if pagination.pages > 1 %}
+    <div class="text-center">
+        {{ macros.pagination_widget(pagination, "post_bp.posts") }}
+    </div>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,36 @@
+<div class="card p-3 mb-3 shadow text-start">
+    <div class="mb-1">
+        <img
+        class="rounded-circle me-2"
+        src="{{ url_for('static', filename='main/images/profile-images/' + current_user.profile_image) }}"
+        width="48"
+        alt="image not found"
+        />
+        <a
+        href="{{ url_for('user_bp.profile', username=comment.author.username) }}"
+        class="text-decoration-none text-dark"
+        >@{{ comment.author.username }}</a
+        > – {{ moment(comment.timestamp).fromNow() }}
+    </div>
+    {% if comment.disabled %}
+    <p class="mt-3 mb-0"><strong class="text-danger">This comment has been disabled by a moderator.</strong></p>
+    {% else %}
+    <div class="mt-2">{{ comment.body | safe }}</div>
+    {% endif %}
+
+    {% if moderate %}
+    <div class="mt-3 text-end">
+        {% if comment.disabled %}
+            <a href="{{ url_for('moderate_bp.moderate_enable', comment_id=comment.id, page=page) }}"
+                class="btn btn-danger btn-xs">
+                Enable
+            </a>
+        {% else %}
+            <a href="{{ url_for('moderate_bp.moderate_disable', comment_id=comment.id, page=page) }}"
+                class="btn btn-primary btn-xs">
+                Disable
+            </a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>

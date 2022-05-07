@@ -1,0 +1,39 @@
+#profile-image-div {
+    position: relative;
+    width: 256px;
+}
+
+#profile-image {
+    display: inline-block;
+
+}
+
+#profile-image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 256px;
+    height: 256px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.25s;
+}
+
+#profile-image-overlay:hover {
+    opacity: 1;
+}
+
+#profile-image-icon {
+    font-size: 2em;
+    font-weight: bold;
+}
+
+#profile-image-text {
+    font-size: 1.25em;
+    margin-top: 0.25em;
+}

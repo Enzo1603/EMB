@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+
+{% import "_macros.html" as macros %}
+
+{% block styles %}
+{{ super() }}
+{{ render_static("css", "main/css/user.css") }}
+{% endblock %}
+
+
+{% block content %}
+<!-- Profile Header -->
+<div class="container">
+    <div class="col-lg-10 mx-auto pb-3 col-md-10 border-bottom">
+        <div class="row">
+            <div class="col-lg-4 me-5 text-center">
+
+                <!-- profile picture -->
+                <div id="profile-image-div" class="mx-auto">
+                    <img src="{{ url_for('static', filename='main/images/profile-images/' + user.profile_image) }}"
+                        alt="image not found" width="256" height="256" class="rounded-circle"
+                        id="profile-image">
+                    
+                    {% if current_user == user or current_user.is_administrator() %}
+                    <a type="button"
+                        {% if current_user.premium_account or current_user.is_administrator() %}
+                            data-bs-toggle="modal" data-bs-target="#ProfileImageModal"
+                        {% else %}
+                            href="{{ url_for('main_bp.pricing') }}"
+                        {% endif %}
+                        >
+                        <div id="profile-image-overlay"
+                            class="rounded-circle" width="256" height="256">
+                            <div id="profile-image-icon">
+                                <i class="bi bi-pencil-square"></i>
+                            </div>
+                            <p id="profile-image-text">
+                                Change Profile Image
+                            </p>
+                        </div>
+                    </a>
+                    {% endif %}
+                </div>
+
+                <h4 class="mt-5">
+                    <!-- username -->
+                    <mark {% if user.is_administrator() %}style="background: #ff2800; color: white;"{% endif %}>
+                        <strong>
+                            @{{ user.username }}
+                        </strong>
+                    </mark>
+                    <br>
+
+                    <!-- Member since -->
+                    <span class="mt-4 text-muted fw-bolder d-block" style="font-size: small; line-height: 0;">
+                        Member since: {{ moment(user.member_since).format("LL") }}
+                    </span>
+
+                    <!-- Last seen -->
+                    <span class="text-muted fw-bolder" style="font-size: small; line-height: 0;">
+                        Last seen: {{ moment(user.last_seen).fromNow() }}
+                    </span>
+
+                    {% if current_user.is_administrator() %}
+                    <!-- Email -->
+                    <br class="mb-2">
+                    <strong class="fs-5" style="margin: auto;">
+                            <a class="link-dark text-decoration-none" href="mailto:{{ user.email }}">{{ user.email }}</a>
+                    </strong>
+                    {% endif %}
+                </h4>
+
+                <div class="row mt-auto" style="text-align: justify; text-justify: inter-word;">
+                    <!-- Follwers count -->
+                    <div class="col col-lg-6 mx-auto ps-3 d-flex flex-column">
+                        <a href="{{ url_for('user_bp.followers', username=user.username) }}"
+                            type="button" class="mt-2 btn btn-primary">
+                            Followers <span class="badge bg-white text-black">{{ user.followers.count() - 1 }}</span>
+                        </a>
+                    </div>
+                    <!-- Followed count -->
+                    <div class="col col-lg-6 mx-auto pe-3 d-flex flex-column">
+                        <a href="{{ url_for('user_bp.followed_by', username=user.username) }}"
+                            type="button" class="mt-2 btn btn-primary">
+                            Following <span class="badge bg-white text-black">{{ user.followed.count() - 1 }}</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row col-lg-7" style="text-align: justify; text-justify: inter-word;">
+                <!-- location and about me -->
+                <p class="text-muted ps-0">
+                    {% if user.location %}
+                        <strong class="text-dark"> from 
+                            <a class="text-decoration-none text-dark"
+                                href="https://maps.google.com/?q={{ user.location }}">
+                                {{ user.location }}
+                            </a>
+                        </strong>
+                        <br>
+                    {% endif %}
+
+                    {% if user.about_me %}
+                        {% for line in user.about_me.split("\n") %}
+                            {{ line }}
+                            <br>
+                        {% endfor %}
+                    {% endif %}
+                </p>
+
+                <!-- Buttons -->
+                <div class="row px-0" style="text-align: justify; text-justify: inter-word;">
+                    {% if user == current_user or current_user.is_administrator() %}
+                    <!-- Create New Post Button -->
+                    <div class="col col-lg-6 mx-auto d-flex flex-column">
+                        <a href="{{ url_for('post_bp.create_post', username=user.username) }}"
+                            class="w-100 btn btn-lg {% if current_user.is_administrator() %}btn-danger{% else %}btn-success{% endif %} mt-auto">
+                            <span class="my-auto">
+                                <i class="bi bi-plus-square me-3 fs-5"></i>
+                                Create New Post {% if current_user.is_administrator() %}[Admin]{% endif %}
+                            </span>
+                        </a>
+                    </div>
+                    {% endif %}
+
+                    {% if user == current_user or current_user.is_administrator() %}
+                    <!-- Account Information Button -->
+                    <div class="col col-lg-6 mx-auto d-flex flex-column">
+                        <a href="{{ url_for('user_bp.edit_profile', username=user.username) }}"
+                            class="w-100 btn btn-lg {% if current_user.is_administrator() %}btn-outline-danger{% else %}btn-outline-dark{% endif %} mt-auto">
+                            <span class="my-auto">
+                                <i class="bi bi-pencil-square me-3 fs-5"></i>
+                                Account Information {% if current_user.is_administrator() %}[Admin]{% endif %}
+                            </span>
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+
+                {% if current_user.can(Permission.FOLLOW) and user != current_user %}
+                <div class="row" style="text-align: justify; text-justify: inter-word;">
+                    {% if not current_user.is_following(user) %}
+                    <!-- Follow Button -->
+                    <a href="{{ url_for('user_bp.follow', username=user.username) }}"
+                        class="btn btn-lg btn-primary mt-auto">
+                        <span>
+                            <i class="bi bi-person-plus-fill"></i>
+                            Follow
+                        </span>
+                    </a>
+                    {% else %}
+                    <!-- Unfollow Button -->
+                    <a href="{{ url_for('user_bp.unfollow', username=user.username) }}"
+                        class="btn btn-lg btn-outline-danger mt-auto">
+                        <span>
+                            <i class="bi bi-person-plus-fill"></i>
+                            Unfollow
+                        </span>
+                    </a>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Update Account Information Modal -->
+<div class="modal fade" id="ProfileImageModal" tabindex="-1" aria-labelledby="ProfileImageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content pb-0">
+
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body pb-2">
+                    <div class="text-center">
+                        {% include "_logo.html" %}
+                        <h1 class="h3 my-4 fw-normal">Update Profile Image</h1>
+                    </div>
+                
+                    <div class="mx-4 mt-4">
+                        {{ render_form(
+                                form,
+                                method="POST",
+                                enctype="multipart/form-data",
+                                novalidate=True,
+                                button_style="btn btn-md btn-warning w-100 mt-3"
+                            ) 
+                        }}
+                    </div>
+
+                </div>
+
+                <div class="modal-footer mx-4 my-2">
+                    <button type="button" class="btn btn-danger w-100" data-bs-dismiss="modal">Discard</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!-- Users Blog Posts -->
+<br>
+<br>
+{% include "_post.html" %}
+
+{% if pagination.pages > 1 %}
+    <div class="text-center">
+        {{ macros.pagination_widget(pagination, "user_bp.profile", username=user.username) }}
+    </div>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,37 @@
+<!-- @formatter:off -->
+{% extends "base.html" %}
+
+{% block styles %}
+{{ super() }}
+{{ render_static("css", "css/errors.css") }}
+<style>
+    .bg-img {
+        position: relative;
+        border-radius: 10px;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        height: 100%;
+        background-image: url({{ url_for('static', filename='errors/images/background-space.jpg')}});
+    }
+</style>
+
+{% endblock %}
+
+{% block content %}
+<div class="container bg-container bg-img">
+    <div class="container col-lg-6 col-md-8 py-3 mb-4 text-center">
+        <h1 class="text-light">Oops! You ran out of oxygen.</h1>
+        <br>
+        <h3 class="text-light">The page you're looking for is now beyond your reach...</h3>
+        <br>
+        <h5 class="text-light">{{ error_message }}</h5>
+        <br>
+        <br>
+        <br>
+        <a href="{{ url_for('main_bp.home') }}" class="btn btn-light btn-lg me-4 mb-4">Return to Home Page</a>
+
+        <img id="astronaut-img" src="{{ url_for('static', filename='errors/images/astronaut.png') }}" alt="astronaut picture">
+    </div>
+</div>
+{% endblock %}

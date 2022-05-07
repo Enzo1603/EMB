@@ -1,0 +1,20 @@
+{% extends "auth/email/base_email.html" %}
+
+{% block content %}
+<p>
+    To confirm your account please click on the following button:
+    <br>
+    <br>
+    <a class="btn btn-dark" href="{{ url_for('auth_bp.confirm', token=token, _external=True) }}">
+        Confirm Account
+    </a>
+</p>
+
+<p>Alternatively, you can paste the following link in your browser's address bar:</p>
+
+<p class="text-wrap text-break">{{ url_for('auth_bp.confirm', token=token, _external=True) }}</p>
+{% endblock %}
+
+
+
+

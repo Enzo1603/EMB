@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% import "_macros.html" as macros %}
+
+
+{% block content %}
+<div class="container py-3 mb-4">
+    <h1 class="mb-5 text-center"><mark>Posts</mark></h1>
+    <br>
+
+    <div class="container">
+        <ul class="nav nav-pills justify-content-center">
+            <li class="nav-item me-2">
+                <a href="{{ url_for('post_bp.show_all') }}" class="nav-link {% if not show_followed %}active bg-dark{% else %}text-warning{% endif %}">All</a>
+            </li>
+            {% if current_user.is_authenticated %}
+            <li class="nav-item">
+                <a href="{{ url_for('post_bp.show_followed') }}" class="nav-link {% if show_followed %}active bg-dark{% else %}text-warning{% endif %}">Followed</a>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
+    <br>
+    <br>
+
+    <!-- Users Blog Posts -->
+    {% include "_post.html" %}
+
+    {% if pagination.pages > 1 %}
+        <div class="text-center">
+            {{ macros.pagination_widget(pagination, "post_bp.posts") }}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

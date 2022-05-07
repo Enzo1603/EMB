@@ -1,0 +1,10 @@
+Dear {{ user.username }},
+
+{% block content %}
+{% endblock %}
+
+Sincerely,
+The EMB Team
+
+
+Note: Replies to this email address are not monitored.

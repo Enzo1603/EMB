@@ -1,0 +1,80 @@
+{% from "bootstrap5/utils.html" import render_static %}
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    {% block head %}
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>EMB</title>
+    {{ render_static("icon", "favicon.ico") }}
+
+    {% block styles %}
+    <!-- Bootstrap CSS -->
+    {{ bootstrap.load_css() }}
+    <!-- Boostrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
+    <!-- Custom CSS -->
+    {{ render_static("css", "css/base.css") }}
+
+    <!-- Font Awesome -->
+    <script src="https://kit.fontawesome.com/50f63b43c3.js" crossorigin="anonymous"></script>
+
+    <style>
+        mark {
+            background: #f9ca0e;
+            padding: 2px 5px;
+            border-radius: .25rem;
+        }
+
+        p {
+            margin-bottom: 24px;
+        }
+    </style>
+    {% endblock %}
+
+    {% endblock %}
+
+</head>
+
+<body>
+    <br>
+    <br>
+    <div class="container col-lg-4 col-md-8 py-3 pt-4 mb-4 bg-light rounded-3">
+        <div class="text-center">
+            {% include "_logo.html" %}
+            <h1 class="h3 pb-1 my-4 fw-normal"><mark>{{ subject }}</mark></h1>
+            <hr>
+        </div>
+
+        
+        <div class="m-4">
+            <p>Dear <mark><b>@{{ user.username }}</b></mark></p>
+            
+            {% block content %}
+            {% endblock %}
+            
+            <p>
+                Sincerely,<br>
+                The EMB Team
+            </p>
+
+            <p class="mt-2 text-muted">Note: Replies to this email address are not monitored.</p>
+        </div>
+
+    </div>
+
+    {% block scripts %}
+    {{ bootstrap.load_js() }}
+    {% endblock %}
+</body>
+
+</html>
+
+
+
+
+

@@ -1,0 +1,128 @@
+{% macro pagination_widget(pagination, endpoint) %}
+<nav aria-label="Page Navigation Posts">
+    <ul class="pagination justify-content-center">
+        <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+            <a href="{% if pagination.has_prev %}{{ url_for(endpoint, page=pagination.page-1, **kwargs) }}{% else %}#{% endif %}"
+                class="page-link text-black">
+                &laquo;
+            </a>
+        </li>
+        {% for page_number in pagination.iter_pages() %}
+            {% if page_number %}
+                {% if page_number == pagination.page %}
+                <li class="page-item active">
+                    <a href="{{ url_for(endpoint, page=page_number, **kwargs) }}"
+                        class="page-link bg-dark border-dark text-white">
+                        {{ page_number }}
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item">
+                    <a href="{{ url_for(endpoint, page=page_number, **kwargs) }}"
+                        class="page-link text-black">
+                        {{ page_number }}
+                    </a>
+                </li>
+                {% endif %}
+            {% else %}
+                <li class="page-item disabled">
+                    <a href="#"
+                        class="page-link text-black">
+                        &hellip;
+                    </a>
+                </li>
+            {% endif %}
+        {% endfor %}
+        <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+            <a href="{% if pagination.has_next %}{{ url_for(endpoint, page=pagination.page+1, **kwargs) }}{% else %}#{% endif %}"
+                class="page-link text-black">
+                &raquo;
+            </a>
+        </li>
+    </ul>
+</nav>
+{% endmacro %}
+
+
+{% macro follower_widget(follower, moment) %}
+<div class="col-xxl-6 col-xl-7 col-lg-9 col-md-12 mx-auto">
+    <div class="card p-3 mb-3 shadow" style="border-radius: 0.5rem;">
+        <div class="mb-1">
+
+            <div class="row">
+
+                <div class="col col-sm-3">
+                    <img src="{{ url_for('static', filename='main/images/profile-images/' + follower.user.profile_image) }}"
+                        class="rounded-circle me-2" width="96" height="96"
+                        alt="image not found">
+                </div>
+
+                <div class="col col-sm-4 py-auto">
+                    <br>
+                    <div class="row">
+                        <a href="{{ url_for('user_bp.profile', username=follower.user.username) }}"
+                            class="text-decoration-none text-dark">
+                            <mark class="fs-5 fw-bold" {% if follower.user.is_administrator() %}style="background: #ff2800; color: white;"{% endif %}>
+                                @{{ follower.user.username }}
+                            </mark>
+                        </a>
+                    </div>
+
+                    <div class="row">
+                        <p class="mt-1 text-muted fw-bold">since {{ moment }}</p>
+                    </div>
+                </div>
+
+                <div class="col col-sm-5 text-end">
+                    <a href="{{ url_for('user_bp.profile', username=follower.user.username) }}"
+                        class="btn btn-dark mt-1">View Profile</a>
+                    {# <a href="{{ url_for('user_bp.unfollow', username=follower.user.username) }}"
+                        class="btn btn-danger mt-1">Unfollow</a> #}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endmacro %}
+
+
+{% macro followed_widget(followed, moment) %}
+<div class="col-xxl-6 col-xl-7 col-lg-9 col-md-12 mx-auto">
+    <div class="card p-3 mb-3 shadow" style="border-radius: 0.5rem;">
+        <div class="mb-1">
+
+            <div class="row">
+
+                <div class="col col-sm-3">
+                    <img src="{{ url_for('static', filename='main/images/profile-images/' + followed.user.profile_image) }}"
+                        class="rounded-circle me-2" width="96" height="96"
+                        alt="image not found">
+                </div>
+
+                <div class="col col-sm-4 py-auto">
+                    <br>
+                    <div class="row">
+                        <a href="{{ url_for('user_bp.profile', username=followed.user.username) }}"
+                            class="text-decoration-none text-dark">
+                            <mark class="fs-5 fw-bold" {% if followed.user.is_administrator() %}style="background: #ff2800; color: white;"{% endif %}>
+                                @{{ followed.user.username }}
+                            </mark>
+                        </a>
+                    </div>
+
+                    <div class="row">
+                        <p class="mt-1 text-muted fw-bold">since {{ moment }}</p>
+                    </div>
+                </div>
+
+                <div class="col col-sm-5 text-end">
+                    <a href="{{ url_for('user_bp.profile', username=followed.user.username) }}"
+                        class="btn btn-dark mt-1">View Profile</a>
+                    {# <a href="{{ url_for('user_bp.unfollow', username=followed.user.username) }}"
+                        class="btn btn-danger mt-1">Unfollow</a> #}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endmacro %}

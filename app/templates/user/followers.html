@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% import "_macros.html" as macros %}
+
+{% block content %}
+<div class="container py-3 mb-4">
+    <h1 class="mb-5 text-center">{{ title }} <mark class="fw-bold" {% if user.is_administrator() %}style="background: #ff2800; color: white;"{% endif %}>@{{ user.username }}</mark></h1>
+    <br>
+
+
+    {% for follower in followers %}
+        {% if current_user != follower.user %}
+            {{ macros.follower_widget(follower, moment(follower.timestamp).format("LL")) }}
+        {% endif %}
+    {% endfor %}
+</div>
+
+
+{% if pagination.pages > 1 %}
+    <div class="text-center">
+        {{ macros.pagination_widget(pagination, endpoint, username=user.username) }}
+    </div>
+{% endif %}
+{% endblock %}

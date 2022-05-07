@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% import "_macros.html" as macros %}
+
+{% block content %}
+<div class="container col-lg-8 col-md-10 py-3 mb-4 text-center">
+    <h1 class="mb-5"><mark style="background: #0d6efd; color: white;">Comment Moderation</mark></h1>
+    <br>
+    <div class="container col-lg-8 col-md-10 text-center">
+        {% set moderate = True %}
+        {% for comment in comments %}
+        {% include "_comments.html" %}        
+        {% endfor %}
+    </div>
+
+    {% if pagination.pages > 1 %}
+        <div class="text-center">
+            {{ macros.pagination_widget(pagination, "moderate_bp.moderate") }}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

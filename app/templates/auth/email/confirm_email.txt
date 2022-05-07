@@ -1,0 +1,11 @@
+{% extends "auth/email/base_email.txt" %}
+
+{% block content %}
+To confirm your account please click on the following link:
+
+{{ url_for('auth_bp.confirm', token=token, _external=True) }}
+{% endblock %}
+
+
+
+
