@@ -15,8 +15,6 @@ class Config:
     EMB_ADMIN_EMAIL = os.environ.get('EMB_ADMIN_EMAIL')
 
     SSL_REDIRECT = False
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL', '').replace('postgres://', 'postgresql://') or \
-        'sqlite:///' + os.path.join(BASEDIR, 'app.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_RECORD_QUERIES = True
     EMB_SLOW_DB_QUERY_TIME = 0.5
