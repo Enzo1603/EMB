@@ -63,6 +63,10 @@ def create_app(config_name):
     mail.init_app(app)
     moment.init_app(app)
 
+    if app.config["SSL_REDIRECT"]:
+        from flask_sslify import SSLify
+        sslify = SSLify(app)
+
     from app.models.comments_model import Comment
     from app.models.follows_model import Follow
     from app.models.posts_model import Post

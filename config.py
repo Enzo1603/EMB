@@ -14,6 +14,7 @@ class Config:
     EMB_MAIL_SENDER = os.environ.get("EMB_MAIL_SENDER")
     EMB_ADMIN_EMAIL = os.environ.get('EMB_ADMIN_EMAIL')
 
+    SSL_REDIRECT = False
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL', '').replace('postgres://', 'postgresql://') or \
         'sqlite:///' + os.path.join(BASEDIR, 'app.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
@@ -72,10 +73,33 @@ class ProductionConfig(Config):
         app.logger.addHandler(mail_handler)
 
 
+class HerokuConfig(ProductionConfig):
+    SSL_REDIRECT = True if os.environ.get('DYNO') else False
+
+    @classmethod
+    def init_app(cls, app):
+        ProductionConfig.init_app(app)
+
+        # handle reverse proxy server headers
+        try:
+            from werkzeug.middleware.proxy_fix import ProxyFix
+        except ImportError:
+            from werkzeug.contrib.fixers import ProxyFix
+        app.wsgi_app = ProxyFix(app.wsgi_app)
+
+        # log to stderr
+        import logging
+        from logging import StreamHandler
+        file_handler = StreamHandler()
+        file_handler.setLevel(logging.INFO)
+        app.logger.addHandler(file_handler)
+
+
 config = {
     'development': DevelopmentConfig,
     'testing': TestingConfig,
     'production': ProductionConfig,
+    'heroku': HerokuConfig,
 
     'default': DevelopmentConfig
 }
