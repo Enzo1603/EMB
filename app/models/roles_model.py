@@ -57,4 +57,4 @@ class Role(db.Model):
         return self.permissions & perm == perm
 
     def __repr__(self) -> str:
-        return f"<Role id={self.id}, name={self.name}>"
+        return f"<Role {self.name} ({self.id})>"

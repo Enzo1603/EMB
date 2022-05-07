@@ -1,14 +1,39 @@
 import logging
 from logging.handlers import RotatingFileHandler, SMTPHandler
 import os
-from flask import Flask
+import os.path as op
+from flask import Flask, redirect, url_for
+from flask_admin import Admin, AdminIndexView
+from flask_admin.form import SecureForm
+from flask_admin.contrib.fileadmin import FileAdmin
+from flask_admin.contrib.sqla import ModelView
 from flask_bootstrap import Bootstrap5
 from flask_ckeditor import CKEditor
-from flask_login import LoginManager
+from flask_login import LoginManager, current_user
 from flask_mail import Mail
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
 from config import config
+
+admin = Admin(name='EMB Admin', template_mode='bootstrap4')
+
+
+class MyModelView(ModelView):
+    form_base_class = SecureForm
+
+    def is_accessible(self):
+        return current_user.is_administrator()
+
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect(url_for("auth_bp.login"))
+
+
+class MyAdminIndexView(AdminIndexView):
+    def is_accessible(self):
+        return current_user.is_administrator()
+
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect(url_for("auth_bp.login"))
 
 
 bootstrap = Bootstrap5()
@@ -30,12 +55,28 @@ def create_app(config_name):
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
 
+    admin.init_app(app, index_view=MyAdminIndexView())
     bootstrap.init_app(app)
     ckeditor.init_app(app)
     db.init_app(app)
     login_manager.init_app(app)
     mail.init_app(app)
     moment.init_app(app)
+
+    from app.models.comments_model import Comment
+    from app.models.follows_model import Follow
+    from app.models.posts_model import Post
+    from app.models.roles_model import Role
+    from app.models.users_model import User
+    path = op.join(op.dirname(__file__), "static")
+    admin.add_views(
+        MyModelView(Comment, db.session, name="Comments"),
+        MyModelView(Follow, db.session),
+        MyModelView(Post, db.session),
+        MyModelView(Role, db.session),
+        MyModelView(User, db.session),
+        FileAdmin(path, "/static/", name="Static Files")
+    )
 
     from .api_v1 import api_v1_bp as api_v1_blueprint
     app.register_blueprint(api_v1_blueprint, url_prefix="/api/v1")

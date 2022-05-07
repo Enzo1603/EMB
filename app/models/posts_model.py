@@ -64,7 +64,7 @@ class Post(db.Model):
         return Post(title=title, raw_body=raw_body)
 
     def __repr__(self) -> str:
-        return f"<Post id={self.id}, title={self.title}"
+        return f"<Post {self.id}>"
 
 
 db.event.listen(Post.raw_body, "set", Post.on_changed_body)

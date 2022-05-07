@@ -190,7 +190,7 @@ class User(UserMixin, db.Model):
         return json_user
 
     def __repr__(self) -> str:
-        return f"<User id={self.id}, username={self.username}>"
+        return f"<User {self.username} ({self.id})>"
 
 
 class AnonymousUser(AnonymousUserMixin):
