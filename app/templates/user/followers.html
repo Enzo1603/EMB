@@ -8,9 +8,7 @@
 
 
     {% for follower in followers %}
-        {% if current_user != follower.user %}
-            {{ macros.follower_widget(follower, moment(follower.timestamp).format("LL")) }}
-        {% endif %}
+        {{ macros.follower_widget(follower, moment(follower.timestamp).format("LL")) }}
     {% endfor %}
 </div>
 

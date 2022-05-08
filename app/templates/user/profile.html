@@ -75,14 +75,14 @@
                     <div class="col col-lg-6 mx-auto ps-3 d-flex flex-column">
                         <a href="{{ url_for('user_bp.followers', username=user.username) }}"
                             type="button" class="mt-2 btn btn-primary">
-                            Followers <span class="badge bg-white text-black">{{ user.followers.count() - 1 }}</span>
+                            Followers <span class="badge bg-white text-black">{{ user.followers.count() }}</span>
                         </a>
                     </div>
                     <!-- Followed count -->
                     <div class="col col-lg-6 mx-auto pe-3 d-flex flex-column">
                         <a href="{{ url_for('user_bp.followed_by', username=user.username) }}"
                             type="button" class="mt-2 btn btn-primary">
-                            Following <span class="badge bg-white text-black">{{ user.followed.count() - 1 }}</span>
+                            Following <span class="badge bg-white text-black">{{ user.followed.count() }}</span>
                         </a>
                     </div>
                 </div>

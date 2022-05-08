@@ -8,9 +8,7 @@
 
 
     {% for followed in followeds %}
-        {% if current_user != followed.user %}
-            {{ macros.followed_widget(followed, moment(followed.timestamp).format("LL")) }}
-        {% endif %}
+        {{ macros.followed_widget(followed, moment(followed.timestamp).format("LL")) }}
     {% endfor %}
 </div>
 
