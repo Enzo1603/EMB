@@ -10,7 +10,7 @@ from app import db
 from app.models.comments_model import Comment
 from app.models.posts_model import Post
 from app.models.roles_model import Permission
-from app.post.forms import CommentForm, PostForm
+from app.post.forms import CommentForm, PostForm, AdminPostForm
 
 
 @post_bp.route("/<string:username>/create-post/", methods=["GET", "POST"])
@@ -106,3 +106,31 @@ def view_post(username, post_id):
     comments = pagination.items
 
     return render_template("post/view_post.html", post=post, user=user, form=form, comments=comments, pagination=pagination)
+
+
+@post_bp.route("/<string:username>/<int:post_id>/edit/", methods=["GET", "POST"])
+@login_required
+def edit_post(username, post_id):
+    user = User.query.filter_by(username=username).first_or_404()
+    post = Post.query.filter_by(id=post_id, author=user).first_or_404()
+
+    if current_user.is_administrator():
+        form = AdminPostForm()
+    else:
+        form = PostForm()
+
+    if form.validate_on_submit():
+        post.title = form.title.data
+        post.timestamp = form.timestamp.data
+        post.raw_body = form.raw_body.data
+
+        if form.image.data:
+            post.image = upload_post_image(form.image.data, post.id)
+
+        db.session.commit()
+
+    form.title.data = post.title
+    form.timestamp.data = post.timestamp
+    form.raw_body.data = post.raw_body
+
+    return render_template("post/edit_post.html", form=form)

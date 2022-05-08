@@ -48,6 +48,16 @@ p {
 
 }
 
+.admin-link:hover {
+    transition: color 0.15s ease-in-out, background-image 0.15s ease-in-out;
+    -moz-transition: color 0.15s ease-in-out, background-image 0.15s ease-in-out;
+    -webkit-transition: color 0.15s ease-in-out, background-image 0.15s ease-in-out;
+    background-color: white;
+    background-image: linear-gradient(180deg, #ff2800, #d11f00);
+    border-radius: 6px;
+
+}
+
 #sign-out {
     color: #dc3545;
 }

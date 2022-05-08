@@ -20,7 +20,7 @@
         {% if user == current_user or current_user.is_administrator() %}
         <br />
         <a
-            href="{# {{ url_for('post_bp.edit_post', username=username, post_id=post.id) }} #}"
+            href="{{ url_for('post_bp.edit_post', username=post.author.username, post_id=post.id) }}"
             class="btn {% if current_user.is_administrator() %}btn-danger{% else %}btn-dark{% endif %} w-100">
             <i class="bi bi-pencil-square me-3"></i>
             Edit Post
@@ -36,7 +36,12 @@
             alt="image not found"
         />
         <h1 class="my-3 text-bold">{{ post.title }}</h1>
-        <p class="mb-1 text-muted text-end" style="font-weight: 600;">{{ moment(post.timestamp).format("LL") }}</p>
+        <p class="mb-1 text-muted text-end" style="font-weight: 600;">
+            <a href="{{ url_for('user_bp.profile', username=post.author.username) }}"
+                class="text-decoration-none text-muted">
+                @{{ post.author.username }}
+            </a> – {{ moment(post.timestamp).format("LL") }}
+        </p>
     </div>
 
     <div class="col-lg-8 col-md-10 mx-auto my-3 fs-4 border-bottom">

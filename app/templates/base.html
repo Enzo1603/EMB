@@ -64,6 +64,16 @@
                         </a>
                     </li>
 
+                    {% if current_user.is_administrator() %}
+                    <li class="nav-item mt-lg-0 mt-2">
+                        <a class="nav-link px-2 pt-0 admin-link hover-link link-dark text-center"
+                            href="{{ url_for('admin.index') }}">
+                            <i class="bi bi-exclamation-triangle-fill d-block mx-auto mb-1 fs-4"></i>
+                            Admin
+                        </a>
+                    </li>
+                    {% endif %}
+
                     {% if current_user.can(Permission.MODERATE) %}
                     <li class="nav-item mt-lg-0 mt-2">
                         <a class="nav-link px-2 pt-0 moderate-link hover-link link-dark text-center"

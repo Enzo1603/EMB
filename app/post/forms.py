@@ -4,6 +4,7 @@ from flask_wtf.file import FileField, FileAllowed
 
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired, Length, Optional
+from wtforms.fields import DateTimeField
 
 
 class CommentForm(FlaskForm):
@@ -13,6 +14,21 @@ class CommentForm(FlaskForm):
 
 class PostForm(FlaskForm):
     title = StringField("Title", validators=[DataRequired(), Length(max=128)])
+    raw_body = CKEditorField("Post Body", validators=[DataRequired()])
+    image = FileField(
+        "Upload Post Image",
+        validators=[
+            Optional(),
+            FileAllowed(["jpg", "jpe", "jpeg", "png", "gif", "svg", "bmp"]),
+        ]
+    )
+    submit = SubmitField("Upload Post")
+
+
+class AdminPostForm(FlaskForm):
+    title = StringField("Title", validators=[DataRequired(), Length(max=128)])
+    timestamp = DateTimeField("Timestamp", format="%Y-%m-%d %H:%M:%S",
+                              validators=[DataRequired()])
     raw_body = CKEditorField("Post Body", validators=[DataRequired()])
     image = FileField(
         "Upload Post Image",
