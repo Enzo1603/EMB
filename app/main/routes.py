@@ -24,6 +24,7 @@ def for_admins_only():
 
 
 @main_bp.route("/")
+@main_bp.route("/home/")
 def home():
     return render_template("main/home.html")
 
