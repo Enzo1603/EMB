@@ -115,10 +115,22 @@
                             width="48" height="48" class="rounded-circle">
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end text-small text-center" aria-labelledby="dropdownUser1">
-                        <li><a id="sign-out" class="dropdown-item d-flex gap-2 align-items-center" href="{{ url_for('auth_bp.logout') }}">
+                        <li>
+                            <a class="dropdown-item d-flex gap-2 align-items-center"
+                                href="{{ url_for('auth_bp.change_password') }}">
+                                <i class="bi bi-arrow-clockwise mb-1 fs-5"></i>
+                                Change Password
+                            </a>
+                        </li>
+                        
+                        
+                        <li>
+                            <a id="sign-out" class="dropdown-item d-flex gap-2 align-items-center"
+                                href="{{ url_for('auth_bp.logout') }}">
                                 <i class="bi bi-box-arrow-in-left mb-1 fs-5"></i>
                                 Sign out
-                            </a></li>
+                            </a>
+                        </li>
                     </ul>
                 </div>
 

@@ -6,7 +6,7 @@ from werkzeug.urls import url_parse
 
 from app import db
 from app.auth import auth_bp
-from app.auth.forms import RegistrationForm, LoginForm, ResetPasswordForm, ResetPasswordRequestForm
+from app.auth.forms import ChangePasswordForm, RegistrationForm, LoginForm, ResetPasswordForm, ResetPasswordRequestForm
 from app.auth.email import send_password_reset_email, send_confirmation_email
 from app.models.users_model import User
 
@@ -130,6 +130,21 @@ def reset_password(token):
         flash("Your password has been reset.")
         return redirect(url_for("auth_bp.login"))
     return render_template("auth/reset_password.html", form=form)
+
+
+@auth_bp.route("/change-password/", methods=["GET", "POST"])
+@login_required
+def change_password():
+    form = ChangePasswordForm()
+    if form.validate_on_submit():
+        if current_user.verify_password(form.old_password.data):
+            current_user.password = form.password.data
+            db.session.commit()
+            flash("Your password has been updated.")
+            return redirect(url_for("user_bp.profile", username=current_user.username))
+        else:
+            flash("Invalid password.")
+    return render_template("auth/change_password.html", form=form)
 
 
 @auth_bp.route("/logout/")

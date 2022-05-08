@@ -16,13 +16,6 @@ def after_request(response):
     return response
 
 
-@main_bp.route("/custom-admin/")
-@login_required
-@admin_required
-def for_admins_only():
-    return "For Administrators only!"
-
-
 @main_bp.route("/")
 @main_bp.route("/home/")
 def home():
