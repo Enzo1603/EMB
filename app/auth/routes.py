@@ -6,8 +6,8 @@ from werkzeug.urls import url_parse
 
 from app import db
 from app.auth import auth_bp
-from app.auth.forms import ChangePasswordForm, RegistrationForm, LoginForm, ResetPasswordForm, ResetPasswordRequestForm
-from app.auth.email import send_password_reset_email, send_confirmation_email
+from app.auth.forms import ChangeEmailForm, ChangePasswordForm, RegistrationForm, LoginForm, ResetPasswordForm, ResetPasswordRequestForm
+from app.auth.email import send_change_email_email, send_password_reset_email, send_confirmation_email
 from app.models.users_model import User
 
 
@@ -145,6 +145,32 @@ def change_password():
         else:
             flash("Invalid password.")
     return render_template("auth/change_password.html", form=form)
+
+
+@auth_bp.route("/change-email/", methods=["GET", "POST"])
+@login_required
+def change_email_request():
+    form = ChangeEmailForm()
+    if form.validate_on_submit():
+        if current_user.verify_password(form.password.data):
+            new_email = form.new_email.data.lower()
+            send_change_email_email(current_user, new_email)
+            flash("An email with instructions to confirm your new email address has been sent to you.")
+            return redirect(url_for('user_bp.profile', username=current_user.username))
+        else:
+            flash("Invalid email or password.")
+    return render_template("auth/change_email.html", form=form)
+
+
+@auth_bp.route('/change_email/<token>/')
+@login_required
+def change_email(token):
+    if current_user.verify_change_email_token(token):
+        db.session.commit()
+        flash('Your email address has been updated.')
+    else:
+        flash('Invalid request.')
+    return redirect(url_for('user_bp.profile', username=current_user.username))
 
 
 @auth_bp.route("/logout/")

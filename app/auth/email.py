@@ -38,3 +38,14 @@ def send_confirmation_email(user):
         user=user,
         token=token,
     )
+
+
+def send_change_email_email(user, new_email):
+    token = user.generate_change_email_token(new_email)
+    send_email(
+        to=new_email,
+        subject="Welcome to EMB",
+        template="auth/email/change_email_email",
+        user=user,
+        token=token,
+    )

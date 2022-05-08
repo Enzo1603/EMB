@@ -117,6 +117,14 @@
                     <ul class="dropdown-menu dropdown-menu-end text-small text-center" aria-labelledby="dropdownUser1">
                         <li>
                             <a class="dropdown-item d-flex gap-2 align-items-center"
+                                href="{{ url_for('auth_bp.change_email_request') }}">
+                                <i class="bi bi-envelope-x-fill mb-1 fs-5"></i>
+                                Change Email
+                            </a>
+                        </li>
+                        
+                        <li>
+                            <a class="dropdown-item d-flex gap-2 align-items-center"
                                 href="{{ url_for('auth_bp.change_password') }}">
                                 <i class="bi bi-arrow-clockwise mb-1 fs-5"></i>
                                 Change Password

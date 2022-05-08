@@ -120,6 +120,27 @@ class User(UserMixin, db.Model):
             return None
         return User.query.get(id)
 
+    def generate_change_email_token(self, new_email, expires_in=600):
+        return jwt.encode(
+            {"confirm": self.id, "new_email": new_email, "exp": time() + expires_in},
+            current_app.config["SECRET_KEY"],
+            algorithm="HS256",
+        )
+
+    def verify_change_email_token(self, token):
+        try:
+            data = jwt.decode(token, current_app.config["SECRET_KEY"], algorithms=["HS256"])
+            user_id = data["confirm"]
+            new_email = data["new_email"]
+        except:
+            return False
+        if user_id != self.id:
+            return False
+
+        self.email = new_email
+        db.session.add(self)
+        return True
+
     def can(self, perm):
         return self.role is not None and self.role.has_permission(perm)
 
