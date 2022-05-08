@@ -138,7 +138,7 @@ def change_password():
     form = ChangePasswordForm()
     if form.validate_on_submit():
         if current_user.verify_password(form.old_password.data):
-            current_user.password = form.password.data
+            current_user.password = form.new_password.data
             db.session.commit()
             flash("Your password has been updated.")
             return redirect(url_for("user_bp.profile", username=current_user.username))
