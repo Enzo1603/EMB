@@ -95,6 +95,10 @@ def edit_profile(username):
 @login_required
 @permission_required(Permission.FOLLOW)
 def follow(username):
+    if current_user.username == username:
+        flash("You cannot follow yourself.")
+        return redirect(url_for("user_bp.profile", username=current_user.username))
+
     user = User.query.filter_by(username=username).first_or_404()
     if current_user.is_following(user):
         flash("You are already following this user.")
