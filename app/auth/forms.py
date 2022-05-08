@@ -5,16 +5,17 @@ from ..models.users_model import User
 
 
 class RegistrationForm(FlaskForm):
-    username = StringField('Username', validators=[
+    username = StringField('Username', description="Choose your unique username.", validators=[
         DataRequired(),
         Length(4, 32),
         Regexp("^[A-Za-z][A-Za-z0-9_.]*$", 0,
                "Usernames must have only letters, numbers, dots or underscores."),
     ])
-    email = StringField("Email Address", validators=[
+    email = StringField("Email Address", description="We'll never share your email address with anyone else.", validators=[
                         DataRequired(), Email(), Length(6, 64)])
     password = PasswordField(
         "Password",
+        description="Minimum length of 8 characters.",
         validators=[
             DataRequired(),
             EqualTo("confirm_password", message="Passwords must match."),
