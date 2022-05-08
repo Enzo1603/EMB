@@ -23,18 +23,3 @@ class PostForm(FlaskForm):
         ]
     )
     submit = SubmitField("Upload Post")
-
-
-class AdminPostForm(FlaskForm):
-    title = StringField("Title", validators=[DataRequired(), Length(max=128)])
-    timestamp = DateTimeField("Timestamp", format="%Y-%m-%d %H:%M:%S",
-                              validators=[DataRequired()])
-    raw_body = CKEditorField("Post Body", validators=[DataRequired()])
-    image = FileField(
-        "Upload Post Image",
-        validators=[
-            Optional(),
-            FileAllowed(["jpg", "jpe", "jpeg", "png", "gif", "svg", "bmp"]),
-        ]
-    )
-    submit = SubmitField("Upload Post")

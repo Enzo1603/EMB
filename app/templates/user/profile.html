@@ -111,14 +111,14 @@
 
                 <!-- Buttons -->
                 <div class="row px-0" style="text-align: justify; text-justify: inter-word;">
-                    {% if user == current_user or current_user.is_administrator() %}
+                    {% if user == current_user %}
                     <!-- Create New Post Button -->
                     <div class="col col-lg-6 mx-auto d-flex flex-column">
-                        <a href="{{ url_for('post_bp.create_post', username=user.username) }}"
-                            class="w-100 btn btn-lg {% if current_user.is_administrator() %}btn-danger{% else %}btn-success{% endif %} mt-auto">
+                        <a href="{{ url_for('post_bp.create_post') }}"
+                            class="w-100 btn btn-lg btn-success mt-auto">
                             <span class="my-auto">
                                 <i class="bi bi-plus-square me-3 fs-5"></i>
-                                Create New Post {% if current_user.is_administrator() %}[Admin]{% endif %}
+                                Create New Post
                             </span>
                         </a>
                     </div>
