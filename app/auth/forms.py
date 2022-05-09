@@ -1,4 +1,5 @@
 from flask_wtf import FlaskForm
+from markupsafe import Markup
 from wtforms import BooleanField, PasswordField, StringField, SubmitField, ValidationError
 from wtforms.validators import DataRequired, Email, EqualTo, Length, Optional, Regexp
 from ..models.users_model import User
@@ -23,7 +24,8 @@ class RegistrationForm(FlaskForm):
         ]
     )
     confirm_password = PasswordField("Confirm Password", validators=[DataRequired()])
-    terms_of_service = BooleanField("I accept the Terms of Service", validators=[DataRequired()])
+    terms_of_service = BooleanField(
+        Markup("I accept the <a href='#' class='text-dark'>Terms of Service</a>"), validators=[DataRequired()])
     submit = SubmitField("Register")
 
     # pattern required!
