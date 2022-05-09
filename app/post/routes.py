@@ -124,3 +124,20 @@ def edit_post(post_id):
     form.raw_body.data = post.raw_body
 
     return render_template("post/edit_post.html", form=form)
+
+
+@post_bp.route("/<int:post_id>/delete/")
+@login_required
+def delete_post(post_id):
+    post_to_delete = Post.query.filter_by(id=post_id, author_id=current_user.id).first_or_404()
+    comments_to_delete = Comment.query.filter_by(post_id=post_id).all()
+    try:
+        for comment_to_delete in comments_to_delete:
+            db.session.delete(comment_to_delete)
+        db.session.delete(post_to_delete)
+        db.session.commit()
+        flash("Post has been deleted successfully.")
+        return redirect(url_for("user_bp.profile", username=current_user.username))
+    except:
+        flash("Whoops! There was an error deleting the post...")
+        return redirect(url_for("post_bp.view_post", username=current_user.username, post_id=post_id))

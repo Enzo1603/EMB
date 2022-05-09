@@ -1,5 +1,6 @@
 {% from "bootstrap5/utils.html" import render_static %}
 {% from 'bootstrap5/form.html' import render_form %}
+{% from 'bootstrap5/utils.html' import render_messages %}
 
 
 <!doctype html>
@@ -155,12 +156,7 @@
 
     <!-- Your page content -->
     <div class="container col-lg-10 p-0">
-        {% for message in get_flashed_messages() %}
-            <div class="alert {% block alert_color %} alert-warning {% endblock %} alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        {% endfor %}
+        {{ render_messages(dismissible=True) }}
 
         {% block content %}{% endblock %}
     </div>
