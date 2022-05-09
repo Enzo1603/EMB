@@ -17,7 +17,7 @@ from app.post.forms import CommentForm, PostForm
 @login_required
 def create_post():
     if not current_user.can(Permission.WRITE):
-        flash("You do not have the permission to write posts.")
+        flash("You do not have the permission to write posts.", "warning")
         return redirect(url_for("user_bp.profile", username=current_user.username))
 
     form = PostForm()
@@ -90,7 +90,7 @@ def view_post(username, post_id):
         )
         db.session.add(comment)
         db.session.commit()
-        flash("Your comment has been published.")
+        flash("Your comment has been published.", "success")
         return redirect(url_for("post_bp.view_post", username=user.username, post_id=post.id))
     page = request.args.get("page", 1, type=int)
     if page == -1:
@@ -136,8 +136,8 @@ def delete_post(post_id):
             db.session.delete(comment_to_delete)
         db.session.delete(post_to_delete)
         db.session.commit()
-        flash("Post has been deleted successfully.")
+        flash("Post has been deleted successfully.", "success")
         return redirect(url_for("user_bp.profile", username=current_user.username))
     except:
-        flash("Whoops! There was an error deleting the post...")
+        flash("Whoops! There was an error deleting the post...", "warning")
         return redirect(url_for("post_bp.view_post", username=current_user.username, post_id=post_id))

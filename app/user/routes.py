@@ -27,7 +27,7 @@ def profile(username):
                 image = change_profile_image(form.new_profile_image.data, username)
                 user.profile_image = image
                 db.session.commit()
-                flash("Your Profile Image has been changed.")
+                flash("Your Profile Image has been changed successfully.", "success")
         elif user.profile_image != "default_profile_image.jpg":
             image_file_name = user.profile_image
             image_file_path = os.path.join(
@@ -35,7 +35,7 @@ def profile(username):
             os.remove(image_file_path)
             user.profile_image = "default_profile_image.jpg"
             db.session.commit()
-            flash("Your Profile Image has been reset.")
+            flash("Your Profile Image has been reset successfully.", "success")
         return redirect(url_for("user_bp.profile", username=user.username))
 
     page = request.args.get("page", 1, type=int)
@@ -74,7 +74,7 @@ def edit_profile(username):
         user.about_me = form.about_me.data
 
         db.session.commit()
-        flash("Account Information has been updated.")
+        flash("Account Information has been updated successfully.", "success")
 
         return redirect(url_for("user_bp.profile", username=user.username))
 
@@ -96,16 +96,16 @@ def edit_profile(username):
 @permission_required(Permission.FOLLOW)
 def follow(username):
     if current_user.username == username:
-        flash("You cannot follow yourself.")
+        flash("You cannot follow yourself.", "warning")
         return redirect(url_for("user_bp.profile", username=current_user.username))
 
     user = User.query.filter_by(username=username).first_or_404()
     if current_user.is_following(user):
-        flash("You are already following this user.")
+        flash("You are already following this user.", "warning")
         return redirect(url_for("user_bp.profile", username=user.username))
     current_user.follow(user)
     db.session.commit()
-    flash(f"You are now following {username}.")
+    flash(f"You are now following {username}.", "success")
     return redirect(url_for("user_bp.profile", username=username))
 
 
@@ -115,11 +115,11 @@ def follow(username):
 def unfollow(username):
     user = User.query.filter_by(username=username).first_or_404()
     if not current_user.is_following(user):
-        flash("You are not following this user.")
+        flash("You are not following this user.", "info")
         return redirect(url_for('user_bp.profile', username=username))
     current_user.unfollow(user)
     db.session.commit()
-    flash(f"You are not following {username} anymore.")
+    flash(f"You are not following {username} anymore.", "success")
     return redirect(url_for('user_bp.profile', username=username))
 
 

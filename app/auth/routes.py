@@ -32,7 +32,7 @@ def unconfirmed():
 @auth_bp.route("/register/", methods=["GET", "POST"])
 def register():
     if current_user.is_authenticated:
-        flash("You already have an account")
+        flash("You already have an account", "info")
         return redirect(url_for("user_bp.profile", username=current_user.username))
     form = RegistrationForm()
     if form.validate_on_submit():
@@ -44,7 +44,7 @@ def register():
         db.session.add(user)
         db.session.commit()
         send_confirmation_email(user)
-        flash("A confirmation email has been sent to your email address.")
+        flash("A confirmation email has been sent to your email address.", "success")
         return redirect(url_for("auth_bp.login"))
 
     return render_template("auth/register.html", form=form)
@@ -54,15 +54,15 @@ def register():
 @login_required
 def confirm(token):
     if current_user.confirmed:
-        flash("Your account has already been confirmed.")
+        flash("Your account has already been confirmed.", "warning")
         return redirect(url_for("user_bp.profile", username=current_user.username))
     user = User.confirm(token)
     if not user:
-        flash("The confirmation link is invalid or has expired.")
+        flash("The confirmation link is invalid or has expired.", "warning")
     else:
         user.confirmed = True
         db.session.commit()
-        flash("You have confirmed your account. Thank You!")
+        flash("You have confirmed your account. Thank You!", "success")
     return redirect(url_for("user_bp.profile", username=current_user.username))
 
 
@@ -70,21 +70,21 @@ def confirm(token):
 @login_required
 def resend_confirmation():
     send_confirmation_email(current_user)
-    flash("A new confirmation email has been sent to your email address.")
+    flash("A new confirmation email has been sent to your email address.", "success")
     return redirect(url_for("auth_bp.login"))
 
 
 @auth_bp.route("/login/", methods=["GET", "POST"])
 def login():
     if current_user.is_authenticated:
-        flash("You are already logged in.")
+        flash("You are already logged in.", "info")
         return redirect(url_for("user_bp.profile", username=current_user.username))
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
 
         if user is None or not user.verify_password(form.password.data):
-            flash("Invalid username or password")
+            flash("Invalid username or password", "danger")
             return redirect(url_for("auth_bp.login"))
 
         login_user(user, form.remember_me.data, duration=timedelta(days=180))
@@ -99,7 +99,7 @@ def login():
 @auth_bp.route("/reset_password_request/", methods=["GET", "POST"])
 def reset_password_request():
     if current_user.is_authenticated:
-        flash("""You are already logged in. Please you use "Change Password" in the top right corner.""")
+        flash("""You are already logged in. Please you use "Change Password" in the top right corner.""", "warning")
         return redirect(url_for("user_bp.profile", username=current_user.username))
 
     form = ResetPasswordRequestForm()
@@ -107,9 +107,9 @@ def reset_password_request():
         user = User.query.filter_by(email=form.email.data).first()
         if user:
             send_password_reset_email(user)
-            flash("Check your email for the instructions to reset your password.")
+            flash("Check your email for the instructions to reset your password.", "success")
             return redirect(url_for("auth_bp.login"))
-        flash("Email does not exist.")
+        flash("Email does not exist.", "danger")
 
     return render_template("auth/reset_password_request.html", form=form)
 
@@ -120,14 +120,14 @@ def reset_password(token):
         return redirect(url_for("main_bp.home"))
     user = User.verify_reset_password_token(token)
     if not user:
-        flash("Reset token is invalid. You need to request a new one.")
+        flash("Reset token is invalid. You need to request a new one.", "warning")
         return redirect(url_for("main_bp.home"))
 
     form = ResetPasswordForm()
     if form.validate_on_submit():
         user.password = form.new_password.data
         db.session.commit()
-        flash("Your password has been reset.")
+        flash("Your password has been reset.", "success")
         return redirect(url_for("auth_bp.login"))
     return render_template("auth/reset_password.html", form=form)
 
@@ -140,10 +140,10 @@ def change_password():
         if current_user.verify_password(form.old_password.data):
             current_user.password = form.new_password.data
             db.session.commit()
-            flash("Your password has been updated.")
+            flash("Your password has been updated.", "success")
             return redirect(url_for("user_bp.profile", username=current_user.username))
         else:
-            flash("Invalid password.")
+            flash("Invalid password.", "danger")
     return render_template("auth/change_password.html", form=form)
 
 
@@ -155,10 +155,10 @@ def change_email_request():
         if current_user.verify_password(form.password.data):
             new_email = form.new_email.data.lower()
             send_change_email_email(current_user, new_email)
-            flash("An email with instructions to confirm your new email address has been sent to you.")
+            flash("An email with instructions to confirm your new email address has been sent to you.", "info")
             return redirect(url_for('user_bp.profile', username=current_user.username))
         else:
-            flash("Invalid email or password.")
+            flash("Invalid email or password.", "danger")
     return render_template("auth/change_email.html", form=form)
 
 
@@ -167,9 +167,9 @@ def change_email_request():
 def change_email(token):
     if current_user.verify_change_email_token(token):
         db.session.commit()
-        flash('Your email address has been updated.')
+        flash("Your email address has been updated.", "success")
     else:
-        flash('Invalid request.')
+        flash("Invalid request.", "danger")
     return redirect(url_for('user_bp.profile', username=current_user.username))
 
 
@@ -177,5 +177,5 @@ def change_email(token):
 @login_required
 def logout():
     logout_user()
-    flash("You have been logged out.")
+    flash("You have been logged out.", "success")
     return redirect(url_for("main_bp.home"))
